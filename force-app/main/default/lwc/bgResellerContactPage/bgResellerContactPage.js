@@ -1,6 +1,7 @@
 import { LightningElement, api, track } from 'lwc';
 import getResellerContactSummary from '@salesforce/apex/BG_PartnerMerchantDashboardController.getResellerContactSummary';
 import getMerchantsByResellerContact from '@salesforce/apex/BG_PartnerMerchantDashboardController.getMerchantsByResellerContact';
+import { createFilterHandler, resetAndLoad, handlePreviousPage as utilHandlePreviousPage, handleNextPage as utilHandleNextPage } from 'c/filterUtils';
 
 export default class BgResellerContactPage extends LightningElement {
     @api contactId;
@@ -90,27 +91,22 @@ export default class BgResellerContactPage extends LightningElement {
 
     handleNameFilter(event) {
         this.filterName = event.target.value;
-        this.resetAndLoad();
+        resetAndLoad(this, this.loadMerchants);
     }
 
     handlePlanFilter(event) {
         this.filterPlan = event.detail.value;
-        this.resetAndLoad();
+        resetAndLoad(this, this.loadMerchants);
     }
 
     handleLevelFilter(event) {
         this.filterLevel = event.detail.value;
-        this.resetAndLoad();
+        resetAndLoad(this, this.loadMerchants);
     }
 
     handleStatusFilter(event) {
         this.filterStatus = event.detail.value;
-        this.resetAndLoad();
-    }
-
-    resetAndLoad() {
-        this.currentPage = 1;
-        this.loadMerchants();
+        resetAndLoad(this, this.loadMerchants);
     }
 
     // NEW: Handle merchant accordion toggle
@@ -119,17 +115,11 @@ export default class BgResellerContactPage extends LightningElement {
     }
 
     handlePreviousPage() {
-        if (this.currentPage > 1) {
-            this.currentPage--;
-            this.loadMerchants();
-        }
+        utilHandlePreviousPage(this, this.loadMerchants);
     }
 
     handleNextPage() {
-        if (this.currentPage < this.totalPages) {
-            this.currentPage++;
-            this.loadMerchants();
-        }
+        utilHandleNextPage(this, this.loadMerchants);
     }
 
     handleOpenNotes(event) {

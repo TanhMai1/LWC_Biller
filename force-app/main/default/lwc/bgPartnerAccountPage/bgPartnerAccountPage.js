@@ -1,6 +1,7 @@
 import { LightningElement, api, track } from 'lwc';
 import getPartnerSummary from '@salesforce/apex/BG_PartnerMerchantDashboardController.getPartnerSummary';
 import getResellerContacts from '@salesforce/apex/BG_PartnerMerchantDashboardController.getResellerContacts';
+import { createFilterHandler, resetAndLoad, handlePreviousPage as utilHandlePreviousPage, handleNextPage as utilHandleNextPage } from 'c/filterUtils';
 
 export default class BgPartnerAccountPage extends LightningElement {
     @api accountId;
@@ -47,7 +48,8 @@ export default class BgPartnerAccountPage extends LightningElement {
                 pageNum: this.currentPage,
                 pageSize: this.pageSize,
                 sortField: this.sortField,
-                sortDir: this.sortDir
+                sortDir: this.sortDir,
+                searchFilter: this.searchFilter
             });
             this.resellerContacts = result.records;
             this.totalCount = result.totalCount;
@@ -60,28 +62,20 @@ export default class BgPartnerAccountPage extends LightningElement {
 
     handleContactSearch(event) {
         this.searchFilter = event.target.value;
-        this.currentPage = 1;
-        this.loadContacts();
+        resetAndLoad(this, this.loadContacts);
     }
 
     handleSortChange(event) {
         this.sortField = event.detail.value;
-        this.currentPage = 1;
-        this.loadContacts();
+        resetAndLoad(this, this.loadContacts);
     }
 
     handlePreviousPage() {
-        if (this.currentPage > 1) {
-            this.currentPage--;
-            this.loadContacts();
-        }
+        utilHandlePreviousPage(this, this.loadContacts);
     }
 
     handleNextPage() {
-        if (this.currentPage < this.totalPages) {
-            this.currentPage++;
-            this.loadContacts();
-        }
+        utilHandleNextPage(this, this.loadContacts);
     }
 
     // NEW: Handle accordion section toggle
