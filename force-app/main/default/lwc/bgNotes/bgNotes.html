@@ -1,0 +1,76 @@
+<template>
+    <lightning-card title="Notes" icon-name="utility:note">
+        <lightning-button-icon 
+            slot="actions"
+            icon-name="utility:close"
+            alternative-text="Close"
+            onclick={handleClose}>
+        </lightning-button-icon>
+
+        <div class="slds-p-around_small">
+            <!-- Filters -->
+            <div class="slds-grid slds-gutters_x-small slds-m-bottom_small">
+                <div class="slds-col">
+                    <lightning-combobox
+                        label="Object Type"
+                        value={filterObjectType}
+                        options={objectTypeOptions}
+                        onchange={handleObjectTypeFilter}
+                        variant="label-hidden">
+                    </lightning-combobox>
+                </div>
+            </div>
+
+            <!-- Notes List -->
+            <div class="notes-container slds-scrollable_y">
+                <template lwc:if={isLoading}>
+                    <lightning-spinner alternative-text="Loading notes" size="small"></lightning-spinner>
+                </template>
+
+                <template lwc:if={hasNotes}>
+                    <ul class="slds-has-dividers_bottom-space">
+                        <template for:each={notes} for:item="note">
+                            <li key={note.noteId} class="slds-item slds-p-around_small">
+                                <article class="slds-tile">
+                                    <h3 class="slds-tile__title slds-truncate" title={note.title}>
+                                        <span class="slds-text-heading_small">{note.title}</span>
+                                    </h3>
+                                    <div class="slds-tile__detail">
+                                        <p class="slds-text-body_small slds-m-bottom_xx-small">
+                                            <lightning-badge 
+                                                label={note.parentObjectType}
+                                                class="slds-m-right_xx-small">
+                                            </lightning-badge>
+                                            <span class="slds-text-color_weak">{note.formattedDate}</span>
+                                        </p>
+                                        <p class="slds-text-body_regular note-content">{note.content}</p>
+                                        <p class="slds-text-body_small slds-text-color_weak slds-m-top_xx-small">
+                                            Created by {note.createdByName}
+                                        </p>
+                                    </div>
+                                </article>
+                            </li>
+                        </template>
+                    </ul>
+
+                    <!-- Load More -->
+                    <template lwc:if={hasMore}>
+                        <div class="slds-align_absolute-center slds-m-top_small">
+                            <lightning-button 
+                                label="Load More" 
+                                onclick={handleLoadMore}
+                                disabled={isLoadingMore}>
+                            </lightning-button>
+                        </div>
+                    </template>
+                </template>
+
+                <template lwc:if={noNotes}>
+                    <div class="slds-text-body_regular slds-text-color_weak slds-align_absolute-center slds-p-around_medium">
+                        No notes found.
+                    </div>
+                </template>
+            </div>
+        </div>
+    </lightning-card>
+</template>

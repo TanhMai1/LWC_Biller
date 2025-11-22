@@ -1,0 +1,115 @@
+<template>
+    <template lwc:if={isLoading}>
+        <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+    </template>
+
+    <template lwc:if={merchantData}>
+        <div class="merchant-container">
+            <!-- Summary Grid -->
+            <div class="slds-grid slds-gutters slds-wrap">
+                <!-- Partner Summary (if shown) -->
+                <template lwc:if={showPartnerSummary}>
+                    <div class="slds-col slds-size_1-of-2">
+                        <div class="summary-card">
+                            <div class="card-header">PARTNER SUMMARY - PNC</div>
+                            <div class="summary-item">
+                                <span class="summary-label">Plugin Monthly Fee:</span>
+                                <span class="summary-value">{formattedPluginFee}</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Plugin Bill To:</span>
+                                <span class="summary-value">{merchantData.pluginBillTo}</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Tech Fee Min Plan:</span>
+                                <span class="summary-value">{merchantData.techFeeMinimumPlan}</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">ACH Sold By:</span>
+                                <span class="summary-value">{merchantData.achSoldBy}</span>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Merchant Summary -->
+                <div class={merchantSummaryColumnClass}>
+                    <div class="summary-card">
+                        <div class="card-header">MERCHANT SUMMARY</div>
+                        <div class="summary-item">
+                            <span class="summary-label">Current Plan Type:</span>
+                            <span class="summary-value">{merchantData.currentPlanType}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Level:</span>
+                            <span class="summary-value">{formattedLevel}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Last Transaction Date:</span>
+                            <span class="summary-value">{formattedLastTransaction}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Adoption Status:</span>
+                            <span class="summary-value">{merchantData.adoptionStatus}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Integration Information -->
+                <div class="slds-col slds-size_1-of-3">
+                    <div class="summary-card">
+                        <div class="card-header">INTEGRATION INFORMATION</div>
+                        <div class="summary-item">
+                            <span class="summary-label">Connected A/S:</span>
+                            <span class="summary-value">{merchantData.connectedAccountingSoftware}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Connected CC Gateway:</span>
+                            <span class="summary-value">{merchantData.connectedCCGateway}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Connected ACH Gateway:</span>
+                            <span class="summary-value">{merchantData.connectedACHGateway}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Connected Check Gateway:</span>
+                            <span class="summary-value">{merchantData.connectedCheckGateway}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Information / Account Team -->
+                <div class="slds-col slds-size_1-of-3">
+                    <div class="summary-card">
+                        <div class="card-header">USER INFORMATION // ACCOUNT TEAM</div>
+                        <div class="summary-item">
+                            <span class="summary-label">BDR:</span>
+                            <span class="summary-value">{merchantData.bdrName}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">SDR:</span>
+                            <span class="summary-value">{merchantData.sdrName}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">AM:</span>
+                            <span class="summary-value">{merchantData.accountExecutiveName}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">SS:</span>
+                            <span class="summary-value">{merchantData.subscriberSuccessName}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Items -->
+            <div class="slds-m-top_medium">
+                <c-bg-merchant-cases account-id={accountId}></c-bg-merchant-cases>
+            </div>
+
+            <div class="slds-m-top_small">
+                <c-bg-merchant-opportunities account-id={accountId}></c-bg-merchant-opportunities>
+            </div>
+        </div>
+    </template>
+</template>

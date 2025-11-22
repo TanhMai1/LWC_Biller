@@ -1,0 +1,46 @@
+.contact-summary-grid {
+    padding: 1rem;
+}
+
+.section-header {
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: #3e3e3c;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.0625rem;
+}
+
+.summary-section {
+    background: #fafaf9;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    border: 1px solid #e5e5e5;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+}
+
+.summary-label {
+    font-weight: 400;
+    color: #3e3e3c;
+}
+
+.summary-value {
+    font-weight: 600;
+    color: #080707;
+}
+
+.filter-section {
+    background: white;
+    padding: 1rem;
+    border-radius: 0.25rem;
+}

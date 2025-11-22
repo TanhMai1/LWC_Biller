@@ -1,0 +1,89 @@
+<template>
+    <div class="dashboard-container">
+        <!-- Header with Search -->
+        <template lwc:if={showDashboard}>
+            <div class="slds-page-header">
+                <div class="slds-page-header__row">
+                    <div class="slds-page-header__col-title">
+                        <div class="slds-media">
+                            <div class="slds-media__figure">
+                                <lightning-icon icon-name="custom:custom85" size="medium"></lightning-icon>
+                            </div>
+                            <div class="slds-media__body">
+                                <h1 class="slds-page-header__title slds-truncate" title={dashboardTitle}>
+                                    {dashboardTitle}
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Search Bar -->
+                <div class="slds-page-header__row slds-m-top_small">
+                    <div class="slds-col slds-size_1-of-1">
+                        <lightning-input
+                            type="search"
+                            placeholder="Search..."
+                            class="search-input"
+                            variant="label-hidden">
+                        </lightning-input>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Main Content Grid -->
+        <div class="slds-grid slds-gutters">
+            <!-- Left Content Area -->
+            <div class={mainContentClass}>
+                <!-- Search Component (Home Page Only) -->
+                <template lwc:if={showSearch}>
+                    <c-bg-search onrecordselect={handleRecordSelect}></c-bg-search>
+                </template>
+
+                <!-- Loading State -->
+                <template lwc:if={isLoading}>
+                    <div class="slds-align_absolute-center slds-m-top_large">
+                        <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                    </div>
+                </template>
+
+                <!-- Dashboard Content -->
+                <template lwc:if={showDashboard}>
+                    <!-- Partner Dashboard -->
+                    <template lwc:if={isPartnerMode}>
+                        <c-bg-partner-account-page 
+                            account-id={currentRecordId}
+                            onopennotes={handleOpenNotes}>
+                        </c-bg-partner-account-page>
+                    </template>
+
+                    <!-- Merchant Dashboard -->
+                    <template lwc:if={isMerchantMode}>
+                        <c-bg-merchant-account-page 
+                            account-id={currentRecordId}
+                            onopennotes={handleOpenNotes}>
+                        </c-bg-merchant-account-page>
+                    </template>
+
+                    <!-- Reseller Contact Dashboard -->
+                    <template lwc:if={isResellerContactMode}>
+                        <c-bg-reseller-contact-page 
+                            contact-id={currentRecordId}
+                            onopennotes={handleOpenNotes}>
+                        </c-bg-reseller-contact-page>
+                    </template>
+                </template>
+            </div>
+
+            <!-- Notes Sidebar (Right) -->
+            <template lwc:if={isNotesSidebarOpen}>
+                <div class="slds-col slds-size_3-of-12 notes-sidebar">
+                    <c-bg-notes 
+                        parent-id={currentRecordId}
+                        onclosesidebar={handleCloseNotes}>
+                    </c-bg-notes>
+                </div>
+            </template>
+        </div>
+    </div>
+</template>

@@ -1,0 +1,103 @@
+<template>
+    <!-- Partner Summary Cards -->
+    <div class="slds-grid slds-gutters slds-wrap slds-m-bottom_small">
+        <div class="slds-col slds-size_1-of-2">
+            <lightning-card title="Partner Summary - PNC" icon-name="standard:account">
+                <div class="slds-p-around_medium">
+                    <template lwc:if={isLoading}>
+                        <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+                    </template>
+                    <template lwc:if={partnerData}>
+                        <div class="summary-item">
+                            <span class="summary-label">Plugin Monthly Fee:</span>
+                            <span class="summary-value">{partnerData.pluginMonthlyFee}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Plugin Bill To:</span>
+                            <span class="summary-value">{partnerData.pluginBillTo}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Tech Fee Min Plan:</span>
+                            <span class="summary-value">{partnerData.techFeeMinimumPlan}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">ACH Sold By:</span>
+                            <span class="summary-value">{partnerData.achSoldBy}</span>
+                        </div>
+                    </template>
+                </div>
+            </lightning-card>
+        </div>
+
+        <div class="slds-col slds-size_1-of-2">
+            <lightning-card title="Reseller Account KPIs" icon-name="utility:chart">
+                <div class="slds-p-around_medium">
+                    <template lwc:if={partnerData}>
+                        <div class="summary-item">
+                            <span class="summary-label">Number of Rapids Submitted:</span>
+                            <span class="summary-value">{partnerData.rapidsSubmitted}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Last Rapid Date:</span>
+                            <span class="summary-value">{formattedLastRapidDate}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Number of Active Accounts:</span>
+                            <span class="summary-value">{partnerData.activeAccounts}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">% of Premium Accounts:</span>
+                            <span class="summary-value">{partnerData.premiumAccountsPercent}%</span>
+                        </div>
+                    </template>
+                </div>
+            </lightning-card>
+        </div>
+    </div>
+
+    <!-- Action Items -->
+    <lightning-card title="Action Items" icon-name="utility:list">
+        <div class="slds-p-around_medium">
+            <!-- Filter -->
+            <div class="slds-m-bottom_small">
+                <lightning-input
+                    type="text"
+                    label="Filter Reseller Contact"
+                    placeholder="Search contacts..."
+                    onchange={handleContactSearch}>
+                </lightning-input>
+            </div>
+
+            <!-- Reseller Contacts Accordion -->
+            <template lwc:if={isLoadingContacts}>
+                <lightning-spinner alternative-text="Loading contacts" size="small"></lightning-spinner>
+            </template>
+
+            <template lwc:if={hasContacts}>
+                <lightning-accordion 
+                    allow-multiple-sections-open
+                    active-section-name={openSections}
+                    ontogglesection={handleAccordionToggle}>
+                    <template for:each={resellerContacts} for:item="contact">
+                        <lightning-accordion-section 
+                            key={contact.contactId} 
+                            name={contact.contactId} 
+                            label={contact.contactName}>
+                            <c-bg-reseller-contact-page
+                                contact-id={contact.contactId}
+                                is-nested="true"
+                                onopennotes={handleOpenNotes}>
+                            </c-bg-reseller-contact-page>
+                        </lightning-accordion-section>
+                    </template>
+                </lightning-accordion>
+            </template>
+
+            <template lwc:if={noContacts}>
+                <div class="slds-text-align_center slds-text-color_weak slds-p-around_medium">
+                    No reseller contacts found.
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

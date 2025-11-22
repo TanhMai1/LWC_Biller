@@ -1,0 +1,59 @@
+<template>
+    <lightning-card title={cardTitle} icon-name={cardIcon}>
+        <div class="slds-p-around_medium">
+            <template lwc:if={isLoading}>
+                <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+            </template>
+
+            <template lwc:if={hasData}>
+                <!-- Partner Info Summary -->
+                <template lwc:if={isPartnerInfo}>
+                    <dl class="slds-dl_horizontal">
+                        <dt class="slds-dl_horizontal__label">Plugin Monthly Fee:</dt>
+                        <dd class="slds-dl_horizontal__detail">{formattedPluginFee}</dd>
+                        <dt class="slds-dl_horizontal__label">Plugin Bill To:</dt>
+                        <dd class="slds-dl_horizontal__detail">{summaryData.pluginBillTo}</dd>
+                        <dt class="slds-dl_horizontal__label">Tech Fee Minimum Plan:</dt>
+                        <dd class="slds-dl_horizontal__detail">{summaryData.techFeeMinimumPlan}</dd>
+                        <dt class="slds-dl_horizontal__label">ACH Sold By:</dt>
+                        <dd class="slds-dl_horizontal__detail">{summaryData.achSoldBy}</dd>
+                    </dl>
+                </template>
+
+                <!-- Merchant Summary -->
+                <template lwc:if={isMerchantSummary}>
+                    <dl class="slds-dl_horizontal">
+                        <dt class="slds-dl_horizontal__label">Current Plan:</dt>
+                        <dd class="slds-dl_horizontal__detail">{summaryData.currentPlanType}</dd>
+                        <dt class="slds-dl_horizontal__label">Level:</dt>
+                        <dd class="slds-dl_horizontal__detail">{formattedLevel}</dd>
+                        <dt class="slds-dl_horizontal__label">Last Transaction:</dt>
+                        <dd class="slds-dl_horizontal__detail">{formattedLastTransaction}</dd>
+                        <dt class="slds-dl_horizontal__label">Adoption Status:</dt>
+                        <dd class="slds-dl_horizontal__detail">{summaryData.adoptionStatus}</dd>
+                    </dl>
+                </template>
+
+                <!-- Reseller Contact KPIs -->
+                <template lwc:if={isResellerContactKPI}>
+                    <dl class="slds-dl_horizontal">
+                        <dt class="slds-dl_horizontal__label">Rapids Submitted:</dt>
+                        <dd class="slds-dl_horizontal__detail">{summaryData.rapidsSubmitted}</dd>
+                        <dt class="slds-dl_horizontal__label">Last Rapid Date:</dt>
+                        <dd class="slds-dl_horizontal__detail">{formattedLastRapidDate}</dd>
+                        <dt class="slds-dl_horizontal__label">Active Accounts:</dt>
+                        <dd class="slds-dl_horizontal__detail">{summaryData.activeAccounts}</dd>
+                        <dt class="slds-dl_horizontal__label">Premium Accounts:</dt>
+                        <dd class="slds-dl_horizontal__detail">{summaryData.premiumAccountsPercent}%</dd>
+                    </dl>
+                </template>
+            </template>
+
+            <template lwc:if={hasError}>
+                <div class="slds-text-color_error">
+                    Unable to load summary data.
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

@@ -1,0 +1,63 @@
+<template>
+    <lightning-card title="Search Records" icon-name="utility:search">
+        <div class="slds-p-around_medium">
+            <div class="slds-form-element">
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                    <lightning-input
+                        type="text"
+                        label="Search Resellers, Merchants, or Contacts"
+                        placeholder="Enter name to search..."
+                        value={searchTerm}
+                        onchange={handleSearchInput}
+                        variant="label-hidden">
+                    </lightning-input>
+                </div>
+            </div>
+
+            <!-- Search Results -->
+            <template lwc:if={isSearching}>
+                <div class="slds-m-top_small">
+                    <lightning-spinner alternative-text="Searching" size="small"></lightning-spinner>
+                </div>
+            </template>
+
+            <template lwc:if={showResults}>
+                <ul class="slds-listbox slds-listbox_vertical slds-dropdown slds-dropdown_fluid slds-m-top_x-small" role="listbox">
+                    <template for:each={searchResults} for:item="result">
+                        <li key={result.recordId} 
+                            class="slds-listbox__item" 
+                            role="option"
+                            onclick={handleResultSelect}
+                            data-record-id={result.recordId}
+                            data-object-type={result.objectType}
+                            data-record-type={result.recordType}>
+                            <div class="slds-listbox__option slds-listbox__option_plain slds-media slds-media_center">
+                                <span class="slds-media__figure slds-listbox__option-icon">
+                                    <lightning-icon 
+                                        icon-name={result.iconName} 
+                                        size="small"
+                                        alternative-text={result.recordType}>
+                                    </lightning-icon>
+                                </span>
+                                <span class="slds-media__body">
+                                    <span class="slds-listbox__option-text slds-listbox__option-text_entity">
+                                        {result.name}
+                                    </span>
+                                    <span class="slds-listbox__option-meta slds-listbox__option-meta_entity">
+                                        {result.recordType}
+                                    </span>
+                                </span>
+                            </div>
+                        </li>
+                    </template>
+                </ul>
+            </template>
+
+            <template lwc:if={noResults}>
+                <div class="slds-text-body_regular slds-text-color_weak slds-m-top_small">
+                    No records found matching "{searchTerm}"
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

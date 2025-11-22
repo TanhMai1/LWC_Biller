@@ -1,0 +1,64 @@
+<template>
+    <lightning-card title="Cases" icon-name="standard:case">
+        <div slot="actions">
+            <lightning-button-group>
+                <lightning-button 
+                    label="Open" 
+                    variant={openVariant}
+                    onclick={handleFilterOpen}>
+                </lightning-button>
+                <lightning-button 
+                    label="Closed" 
+                    variant={closedVariant}
+                    onclick={handleFilterClosed}>
+                </lightning-button>
+                <lightning-button 
+                    label="All" 
+                    variant={allVariant}
+                    onclick={handleFilterAll}>
+                </lightning-button>
+            </lightning-button-group>
+        </div>
+
+        <div class="slds-p-around_medium">
+            <template lwc:if={isLoading}>
+                <lightning-spinner alternative-text="Loading cases" size="small"></lightning-spinner>
+            </template>
+
+            <template lwc:if={hasCases}>
+                <lightning-datatable
+                    key-field="caseId"
+                    data={cases}
+                    columns={columns}
+                    hide-checkbox-column
+                    show-row-number-column>
+                </lightning-datatable>
+
+                <!-- Pagination -->
+                <template lwc:if={showPagination}>
+                    <div class="slds-m-top_medium slds-align_absolute-center">
+                        <lightning-button 
+                            label="Previous" 
+                            onclick={handlePreviousPage}
+                            disabled={isFirstPage}>
+                        </lightning-button>
+                        <span class="slds-m-horizontal_small">
+                            Page {currentPage} of {totalPages}
+                        </span>
+                        <lightning-button 
+                            label="Next" 
+                            onclick={handleNextPage}
+                            disabled={isLastPage}>
+                        </lightning-button>
+                    </div>
+                </template>
+            </template>
+
+            <template lwc:if={noCases}>
+                <div class="slds-text-body_regular slds-text-color_weak slds-align_absolute-center slds-p-around_medium">
+                    No cases found.
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

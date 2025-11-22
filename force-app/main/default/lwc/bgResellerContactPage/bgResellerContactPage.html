@@ -1,0 +1,65 @@
+<template>
+    <div class="contact-summary-grid">
+        <!-- RESELLER CONTACT KPIs -->
+        <div class="summary-section">
+            <div class="section-header">RESELLER CONTACT KPIs</div>
+            <template lwc:if={contactData}>
+                <div class="summary-item">
+                    <span class="summary-label">Number of Rapids Submitted:</span>
+                    <span class="summary-value">{contactData.rapidsSubmitted}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Last Rapid Date:</span>
+                    <span class="summary-value">{formattedLastRapidDate}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Number of Active Accounts:</span>
+                    <span class="summary-value">{contactData.activeAccounts}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">% of Premium Accounts:</span>
+                    <span class="summary-value">{contactData.premiumAccountsPercent}%</span>
+                </div>
+            </template>
+        </div>
+
+        <!-- Filter Account Section -->
+        <div class="filter-section slds-m-top_medium">
+            <lightning-input
+                type="text"
+                label="Filter Account"
+                placeholder="Search merchants..."
+                value={filterName}
+                onchange={handleNameFilter}>
+            </lightning-input>
+        </div>
+
+        <!-- Merchant Accounts Accordion -->
+        <div class="slds-m-top_small">
+            <template lwc:if={isLoadingMerchants}>
+                <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+            </template>
+
+            <template lwc:if={hasMerchants}>
+                <lightning-accordion 
+                    allow-multiple-sections-open
+                    active-section-name={openMerchantSections}
+                    ontogglesection={handleAccordionToggle}>
+                    <template for:each={merchants} for:item="merchant">
+                        <lightning-accordion-section 
+                            key={merchant.accountId} 
+                            name={merchant.accountId} 
+                            label={merchant.accountName}>
+                            <c-bg-merchant-account-page
+                                account-id={merchant.accountId}
+                                is-nested="true"
+                                show-partner-summary="true"
+                                onopennotes={handleOpenNotes}>
+                            </c-bg-merchant-account-page>
+                        </lightning-accordion-section>
+                    </template>
+                </lightning-accordion>
+            </template>
+        </div>
+    </div>
+</template>
