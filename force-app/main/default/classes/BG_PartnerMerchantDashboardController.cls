@@ -746,7 +746,7 @@ public static PaginatedResultDTO getResellerContacts(String accountId, Integer p
                 SELECT Minimum_Plan_Required__c
                 FROM Addon_Marketplace__c
                 WHERE Reseller_Account__c = :resellerAccountId
-                AND Type__c = 'Technology Fees'
+                AND Type = 'Technology Fees'
                 ORDER BY CreatedDate DESC
                 LIMIT 1
             ];
