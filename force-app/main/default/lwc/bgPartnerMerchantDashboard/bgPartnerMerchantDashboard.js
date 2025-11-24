@@ -9,7 +9,6 @@ export default class BgPartnerMerchantDashboard extends LightningElement {
     @track isNotesSidebarOpen = false;
     @track currentRecordId;
     @track recordName = '';
-    _initialized = false;
 
     @wire(CurrentPageReference)
     pageRef;
@@ -20,34 +19,30 @@ export default class BgPartnerMerchantDashboard extends LightningElement {
     }
     set recordId(value) {
         this._recordId = value;
-        // Initialize when recordId is set or when component is first rendered
-        if (!this._initialized) {
-            this.initializeDashboard();
-        }
+        // Initialize when recordId is set
+        this.initializeDashboard();
     }
 
     connectedCallback() {
-        // Initialize even if no recordId is provided (for app/home pages)
-        if (!this._initialized && !this._recordId) {
+        // Initialize for app/home pages (no recordId)
+        if (!this._recordId) {
             this.initializeDashboard();
         }
     }
 
     async initializeDashboard() {
-        if (this._initialized) {
-            return; // Prevent double initialization
-        }
-
-        this._initialized = true;
         this.isLoading = true;
 
         try {
             if (this._recordId) {
+                // Hide search and show record-specific dashboard
                 const ctx = await resolveContext({ recordId: this._recordId });
                 this.dashboardMode = ctx.dashboardMode;
                 this.currentRecordId = this._recordId;
             } else {
+                // Show search when no recordId (home/app page)
                 this.dashboardMode = 'Search';
+                this.currentRecordId = null;
             }
         } catch (error) {
             console.error('Error initializing dashboard:', error);
