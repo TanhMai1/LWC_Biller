@@ -112,8 +112,8 @@ public with sharing class BG_PartnerMerchantDashboardController {
     }
     
     // ==================== Search Methods ====================
-    
-    @AuraEnabled(cacheable=true)
+
+    @AuraEnabled
     public static List<SearchResultDTO> searchRecords(String searchTerm) {
         List<SearchResultDTO> results = new List<SearchResultDTO>();
         if (String.isBlank(searchTerm) || searchTerm.length() < 2) {
