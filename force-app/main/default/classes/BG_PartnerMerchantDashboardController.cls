@@ -78,6 +78,7 @@ public with sharing class BG_PartnerMerchantDashboardController {
     public class CaseDTO {
         @AuraEnabled public String caseId;
         @AuraEnabled public String caseNumber;
+        @AuraEnabled public String caseUrl;
         @AuraEnabled public String caseType;
         @AuraEnabled public String ownerName;
         @AuraEnabled public String status;
@@ -89,6 +90,7 @@ public with sharing class BG_PartnerMerchantDashboardController {
     public class OpportunityDTO {
         @AuraEnabled public String opportunityId;
         @AuraEnabled public String name;
+        @AuraEnabled public String opportunityUrl;
         @AuraEnabled public String oppType;
         @AuraEnabled public String stage;
     }
@@ -422,6 +424,7 @@ public static PaginatedResultDTO getResellerContacts(String accountId, Integer p
             dto.caseId = c.Id;
             dto.caseNumber = c.CaseNumber;
             dto.caseType = c.Type;
+            dto.caseUrl = '/' + c.Id;
             dto.ownerName = c.Owner.Name;
             dto.status = c.Status;
             dto.category = c.Category__c;
@@ -468,6 +471,7 @@ public static PaginatedResultDTO getResellerContacts(String accountId, Integer p
             dto.opportunityId = o.Id;
             dto.name = o.Name;
             dto.oppType = o.Type;
+            dto.opportunityUrl = '/' + o.Id;
             dto.stage = o.StageName;
             dtos.add(dto);
         }

@@ -12,15 +12,18 @@ export default class BgMerchantOpportunities extends LightningElement {
     @track pageSize = 5;
 
     columns = [
-        { 
-            label: 'Opportunity Name', 
-            fieldName: 'name', 
-            type: 'text',
-            cellAttributes: { class: 'slds-text-link' }
-        },
-        { label: 'Type', fieldName: 'oppType', type: 'text' },
-        { label: 'Stage', fieldName: 'stage', type: 'text' }
-    ];
+    { 
+        label: 'Opportunity Name', 
+        fieldName: 'opportunityUrl',  
+        type: 'url',                   
+        typeAttributes: {
+            label: { fieldName: 'name' },
+            target: '_blank'  
+        }
+    },
+    { label: 'Type', fieldName: 'oppType', type: 'text' },
+    { label: 'Stage', fieldName: 'stage', type: 'text' }
+];
 
     connectedCallback() {
         this.loadOpportunities();

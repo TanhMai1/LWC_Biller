@@ -1,45 +1,33 @@
 <template>
     <div class="dashboard-container">
-        <!-- Header with Search -->
-        <template lwc:if={showDashboard}>
-            <div class="slds-page-header">
-                <div class="slds-page-header__row">
-                    <div class="slds-page-header__col-title">
-                        <div class="slds-media">
-                            <div class="slds-media__figure">
-                                <lightning-icon icon-name="custom:custom85" size="medium"></lightning-icon>
-                            </div>
-                            <div class="slds-media__body">
-                                <h1 class="slds-page-header__title slds-truncate" title={dashboardTitle}>
-                                    {dashboardTitle}
-                                </h1>
-                            </div>
+        <!-- Header with Search - ALWAYS SHOW -->
+        <div class="slds-page-header">
+            <div class="slds-page-header__row">
+                <div class="slds-page-header__col-title">
+                    <div class="slds-media">
+                        <div class="slds-media__figure">
+                            <lightning-icon icon-name="custom:custom85" size="medium"></lightning-icon>
+                        </div>
+                        <div class="slds-media__body">
+                            <h1 class="slds-page-header__title slds-truncate" title={dashboardTitle}>
+                                {dashboardTitle}
+                            </h1>
                         </div>
                     </div>
                 </div>
-                <!-- Search Bar -->
-                <div class="slds-page-header__row slds-m-top_small">
-                    <div class="slds-col slds-size_1-of-1">
-                        <lightning-input
-                            type="search"
-                            placeholder="Search..."
-                            class="search-input"
-                            variant="label-hidden">
-                        </lightning-input>
-                    </div>
+            </div>
+            <!-- Search Bar - MOVED OUTSIDE OF lwc:if -->
+            <div class="slds-page-header__row slds-m-top_small">
+                <div class="slds-col slds-size_1-of-1">
+                    <c-bg-search onrecordselect={handleRecordSelect}></c-bg-search>
                 </div>
             </div>
-        </template>
+        </div>
 
         <!-- Main Content Grid -->
         <div class="slds-grid slds-gutters">
             <!-- Left Content Area -->
             <div class={mainContentClass}>
-                <!-- Search Component (Home Page Only) -->
-                <template lwc:if={showSearch}>
-                    <c-bg-search onrecordselect={handleRecordSelect}></c-bg-search>
-                </template>
-
                 <!-- Loading State -->
                 <template lwc:if={isLoading}>
                     <div class="slds-align_absolute-center slds-m-top_large">
@@ -72,6 +60,19 @@
                             onopennotes={handleOpenNotes}>
                         </c-bg-reseller-contact-page>
                     </template>
+                </template>
+
+                <!-- Welcome Message (when no dashboard is selected) -->
+                <template lwc:if={showWelcome}>
+                    <div class="slds-align_absolute-center slds-m-top_large">
+                        <div class="slds-text-align_center">
+                            <lightning-icon icon-name="utility:search" size="large" class="slds-m-bottom_small"></lightning-icon>
+                            <h2 class="slds-text-heading_medium">Search for a record to get started</h2>
+                            <p class="slds-text-body_regular slds-m-top_small">
+                                Search for Resellers, Merchants, or Contacts using the search bar above
+                            </p>
+                        </div>
+                    </div>
                 </template>
             </div>
 

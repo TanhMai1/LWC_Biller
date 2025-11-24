@@ -9,9 +9,23 @@ export default class BgSearch extends LightningElement {
 
     searchTimeout;
 
+    connectedCallback() {
+        console.log('Search component connected');
+    }
+
+    disconnectedCallback() {
+        console.log('Search component disconnected');
+        // Clean up timeout when component is removed
+        if (this.searchTimeout) {
+            clearTimeout(this.searchTimeout);
+        }
+    }
+
     handleSearchInput(event) {
         const value = event.target.value;
         this.searchTerm = value;
+        
+        console.log('Search input changed:', value);
 
         // Clear previous timeout
         if (this.searchTimeout) {
@@ -30,10 +44,12 @@ export default class BgSearch extends LightningElement {
     }
 
     async performSearch() {
+        console.log('Performing search for:', this.searchTerm);
         this.isSearching = true;
         this.hasSearched = true;
         try {
             const results = await searchRecords({ searchTerm: this.searchTerm });
+            console.log('Search results received:', results);
             this.searchResults = results.map(r => ({
                 ...r,
                 iconName: this.getIconName(r.objectType, r.recordType)
@@ -51,12 +67,16 @@ export default class BgSearch extends LightningElement {
         const objectType = event.currentTarget.dataset.objectType;
         const recordType = event.currentTarget.dataset.recordType;
 
-        // Dispatch custom event to parent
+        console.log('Record selected:', { recordId, objectType, recordType });
+
+        // Dispatch custom event to parent with bubbles and composed
         this.dispatchEvent(new CustomEvent('recordselect', {
-            detail: { recordId, objectType, recordType }
+            detail: { recordId, objectType, recordType },
+            bubbles: true,
+            composed: true
         }));
 
-        // Clear search
+        // Clear search after selection
         this.searchTerm = '';
         this.searchResults = [];
         this.hasSearched = false;

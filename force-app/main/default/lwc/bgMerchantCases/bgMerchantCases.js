@@ -12,25 +12,28 @@ export default class BgMerchantCases extends LightningElement {
     @track pageSize = 5;
 
     columns = [
-        { 
-            label: 'Case Number', 
-            fieldName: 'caseNumber', 
-            type: 'text',
-            cellAttributes: { class: 'slds-text-link' }
-        },
-        { label: 'Type', fieldName: 'caseType', type: 'text' },
-        { label: 'Owner', fieldName: 'ownerName', type: 'text' },
-        { label: 'Status', fieldName: 'status', type: 'text' },
-        { label: 'Category', fieldName: 'category', type: 'text' },
-        { label: 'Sub-Category', fieldName: 'subCategory', type: 'text' },
-        { 
-            label: 'Summary', 
-            fieldName: 'summary', 
-            type: 'text',
-            wrapText: true,
-            initialWidth: 200
+    { 
+        label: 'Case Number', 
+        fieldName: 'caseUrl',  
+        type: 'url',           
+        typeAttributes: {
+            label: { fieldName: 'caseNumber' },
+            target: '_blank'  
         }
-    ];
+    },
+    { label: 'Type', fieldName: 'caseType', type: 'text' },
+    { label: 'Owner', fieldName: 'ownerName', type: 'text' },
+    { label: 'Status', fieldName: 'status', type: 'text' },
+    { label: 'Category', fieldName: 'category', type: 'text' },
+    { label: 'Sub-Category', fieldName: 'subCategory', type: 'text' },
+    { 
+        label: 'Summary', 
+        fieldName: 'summary', 
+        type: 'text',
+        wrapText: true,
+        initialWidth: 200
+    }
+];
 
     connectedCallback() {
         this.loadCases();

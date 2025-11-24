@@ -24,6 +24,7 @@ export default class BgPartnerMerchantDashboard extends LightningElement {
     }
 
     connectedCallback() {
+        console.log('Dashboard connected, recordId:', this._recordId);
         // Initialize for app/home pages (no recordId)
         if (!this._recordId) {
             this.initializeDashboard();
@@ -40,7 +41,7 @@ export default class BgPartnerMerchantDashboard extends LightningElement {
                 this.dashboardMode = ctx.dashboardMode;
                 this.currentRecordId = this._recordId;
             } else {
-                // Show search when no recordId (home/app page)
+                // Show welcome message when no recordId (home/app page)
                 this.dashboardMode = 'Search';
                 this.currentRecordId = null;
             }
@@ -53,6 +54,7 @@ export default class BgPartnerMerchantDashboard extends LightningElement {
     }
 
     handleRecordSelect(event) {
+        console.log('Record selected:', event.detail);
         const { recordId, objectType, recordType } = event.detail;
         this.currentRecordId = recordId;
         
@@ -71,7 +73,8 @@ export default class BgPartnerMerchantDashboard extends LightningElement {
         this.isNotesSidebarOpen = false;
     }
 
-    get showSearch() {
+    // UPDATED: Remove showSearch getter since search is always visible
+    get showWelcome() {
         return this.dashboardMode === 'Search' && !this.isLoading;
     }
 
@@ -101,6 +104,6 @@ export default class BgPartnerMerchantDashboard extends LightningElement {
         if (this.isPartnerMode) return 'Partner Overview Dashboard - PNC';
         if (this.isMerchantMode) return 'Merchant Overview Dashboard';
         if (this.isResellerContactMode) return 'Reseller Contact';
-        return 'Dashboard';
+        return 'Biller Genie Dashboard';
     }
 }
