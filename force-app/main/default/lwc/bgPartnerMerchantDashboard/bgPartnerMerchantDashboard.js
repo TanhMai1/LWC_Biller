@@ -3,27 +3,49 @@ import { CurrentPageReference } from 'lightning/navigation';
 import resolveContext from '@salesforce/apex/BG_PartnerMerchantDashboardController.resolveContext';
 
 export default class BgPartnerMerchantDashboard extends LightningElement {
-    @api recordId;
+    _recordId;
     @track dashboardMode = 'Search';
-    @track isLoading = true;
+    @track isLoading = false;
     @track isNotesSidebarOpen = false;
     @track currentRecordId;
     @track recordName = '';
+    _initialized = false;
 
     @wire(CurrentPageReference)
     pageRef;
 
+    @api
+    get recordId() {
+        return this._recordId;
+    }
+    set recordId(value) {
+        this._recordId = value;
+        // Initialize when recordId is set or when component is first rendered
+        if (!this._initialized) {
+            this.initializeDashboard();
+        }
+    }
+
     connectedCallback() {
-        this.initializeDashboard();
+        // Initialize even if no recordId is provided (for app/home pages)
+        if (!this._initialized && !this._recordId) {
+            this.initializeDashboard();
+        }
     }
 
     async initializeDashboard() {
+        if (this._initialized) {
+            return; // Prevent double initialization
+        }
+
+        this._initialized = true;
         this.isLoading = true;
+
         try {
-            if (this.recordId) {
-                const ctx = await resolveContext({ recordId: this.recordId });
+            if (this._recordId) {
+                const ctx = await resolveContext({ recordId: this._recordId });
                 this.dashboardMode = ctx.dashboardMode;
-                this.currentRecordId = this.recordId;
+                this.currentRecordId = this._recordId;
             } else {
                 this.dashboardMode = 'Search';
             }
