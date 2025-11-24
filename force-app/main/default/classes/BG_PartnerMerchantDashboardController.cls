@@ -115,12 +115,15 @@ public with sharing class BG_PartnerMerchantDashboardController {
 
     @AuraEnabled
     public static List<SearchResultDTO> searchRecords(String searchTerm) {
+        System.debug('searchRecords called with term: ' + searchTerm);
         List<SearchResultDTO> results = new List<SearchResultDTO>();
         if (String.isBlank(searchTerm) || searchTerm.length() < 2) {
+            System.debug('Search term too short, returning empty results');
             return results;
         }
-        
+
         String likeTerm = '%' + String.escapeSingleQuotes(searchTerm) + '%';
+        System.debug('Searching with likeTerm: ' + likeTerm);
         
         // Search Accounts (Reseller and Merchant)
         for (Account acc : [
@@ -153,7 +156,8 @@ public with sharing class BG_PartnerMerchantDashboardController {
             dto.recordType = 'Reseller Contact';
             results.add(dto);
         }
-        
+
+        System.debug('Returning ' + results.size() + ' search results');
         return results;
     }
     

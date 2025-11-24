@@ -12,6 +12,7 @@ export default class BgSearch extends LightningElement {
     handleSearchInput(event) {
         const value = event.target.value;
         this.searchTerm = value;
+        console.log('Search input changed:', value);
 
         // Clear previous timeout
         if (this.searchTimeout) {
@@ -20,6 +21,7 @@ export default class BgSearch extends LightningElement {
 
         // Debounce search
         if (value.length >= 2) {
+            console.log('Scheduling search for:', value);
             this.searchTimeout = setTimeout(() => {
                 this.performSearch();
             }, 300);
@@ -30,16 +32,21 @@ export default class BgSearch extends LightningElement {
     }
 
     async performSearch() {
+        console.log('performSearch called with term:', this.searchTerm);
         this.isSearching = true;
         this.hasSearched = true;
         try {
+            console.log('Calling Apex searchRecords...');
             const results = await searchRecords({ searchTerm: this.searchTerm });
+            console.log('Search results received:', results);
             this.searchResults = results.map(r => ({
                 ...r,
                 iconName: this.getIconName(r.objectType, r.recordType)
             }));
+            console.log('Processed search results:', this.searchResults);
         } catch (error) {
             console.error('Search error:', error);
+            console.error('Error details:', JSON.stringify(error));
             this.searchResults = [];
         } finally {
             this.isSearching = false;
