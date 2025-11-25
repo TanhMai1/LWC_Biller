@@ -48,7 +48,6 @@ export default class BgResellerContactPage extends LightningElement {
     ];
 
     connectedCallback() {
-        console.log('ResellerContactPage connected with contactId:', this.contactId);
         if (this.contactId) {
             this.loadContactData();
             this.loadMerchants();
@@ -59,8 +58,15 @@ export default class BgResellerContactPage extends LightningElement {
         this.isLoading = true;
         try {
             this.contactData = await getResellerContactSummary({ contactId: this.contactId });
-            console.log('Contact data loaded:', this.contactData);
-            console.log('Has partner data:', this.hasPartnerData);
+            
+            // Dispatch record name to parent (only if not nested)
+            if (!this.isNested && this.contactData && this.contactData.contactName) {
+                this.dispatchEvent(new CustomEvent('recordloaded', {
+                    detail: { recordName: this.contactData.contactName },
+                    bubbles: true,
+                    composed: true
+                }));
+            }
         } catch (error) {
             console.error('Error loading contact data:', error);
         } finally {
@@ -70,14 +76,6 @@ export default class BgResellerContactPage extends LightningElement {
 
     async loadMerchants() {
         this.isLoadingMerchants = true;
-        console.log('Loading merchants with filters:', {
-            filterName: this.filterName,
-            filterPlan: this.filterPlan,
-            filterLevel: this.filterLevel,
-            filterStatus: this.filterStatus,
-            currentPage: this.currentPage
-        });
-        
         try {
             const result = await getMerchantsByResellerContact({
                 contactId: this.contactId,
@@ -88,9 +86,6 @@ export default class BgResellerContactPage extends LightningElement {
                 filterLevel: this.filterLevel,
                 filterStatus: this.filterStatus
             });
-            
-            console.log('Merchants loaded:', result);
-            
             this.merchants = result.records.map(m => ({
                 ...m,
                 accordionLabel: `${m.accountName} | ${m.currentPlanType || 'N/A'} | Level ${m.level || 'N/A'} | ${m.adoptionStatus || 'N/A'}`
@@ -98,34 +93,27 @@ export default class BgResellerContactPage extends LightningElement {
             this.totalCount = result.totalCount;
         } catch (error) {
             console.error('Error loading merchants:', error);
-            this.merchants = [];
-            this.totalCount = 0;
         } finally {
             this.isLoadingMerchants = false;
         }
     }
 
-    // Filter Handlers
     handleNameFilter(event) {
-        console.log('Name filter changed:', event.target.value);
         this.filterName = event.target.value;
         resetAndLoad(this, this.loadMerchants);
     }
 
     handlePlanFilter(event) {
-        console.log('Plan filter changed:', event.detail.value);
         this.filterPlan = event.detail.value;
         resetAndLoad(this, this.loadMerchants);
     }
 
     handleLevelFilter(event) {
-        console.log('Level filter changed:', event.detail.value);
         this.filterLevel = event.detail.value;
         resetAndLoad(this, this.loadMerchants);
     }
 
     handleStatusFilter(event) {
-        console.log('Status filter changed:', event.detail.value);
         this.filterStatus = event.detail.value;
         resetAndLoad(this, this.loadMerchants);
     }
@@ -144,16 +132,6 @@ export default class BgResellerContactPage extends LightningElement {
 
     handleOpenNotes(event) {
         this.dispatchEvent(new CustomEvent('opennotes', { detail: event.detail }));
-    }
-
-    // ADDED: Check if partner data exists
-    get hasPartnerData() {
-        return this.contactData && (
-            this.contactData.pluginMonthlyFee || 
-            this.contactData.pluginBillTo || 
-            this.contactData.techFeeMinimumPlan || 
-            this.contactData.achSoldBy
-        );
     }
 
     get formattedLastRapidDate() {

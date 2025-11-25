@@ -63,7 +63,8 @@
                     <template lwc:if={isPartnerMode}>
                         <c-bg-partner-account-page 
                             account-id={currentRecordId}
-                            onopennotes={handleOpenNotes}>
+                            onopennotes={handleOpenNotes}
+                            onrecordloaded={handleRecordLoaded}>
                         </c-bg-partner-account-page>
                     </template>
 
@@ -71,7 +72,8 @@
                     <template lwc:if={isMerchantMode}>
                         <c-bg-merchant-account-page 
                             account-id={currentRecordId}
-                            onopennotes={handleOpenNotes}>
+                            onopennotes={handleOpenNotes}
+                            onrecordloaded={handleRecordLoaded}>
                         </c-bg-merchant-account-page>
                     </template>
 
@@ -79,7 +81,8 @@
                     <template lwc:if={isResellerContactMode}>
                         <c-bg-reseller-contact-page 
                             contact-id={currentRecordId}
-                            onopennotes={handleOpenNotes}>
+                            onopennotes={handleOpenNotes}
+                            onrecordloaded={handleRecordLoaded}>
                         </c-bg-reseller-contact-page>
                     </template>
                 </template>
