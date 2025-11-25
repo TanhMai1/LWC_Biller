@@ -187,7 +187,7 @@ public with sharing class BG_PartnerMerchantDashboardController {
     
     // ==================== Partner Methods ====================
     
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled(cacheable=false)
     public static PartnerSummaryDTO getPartnerSummary(String accountId) {
         Account acc = [
             SELECT Id, Name, Plugin_Monthly_Fee__c, Plugin_Bill_To__c, ACH_Sold_By__c,
