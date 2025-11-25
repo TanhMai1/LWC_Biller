@@ -3,9 +3,9 @@ import { CurrentPageReference } from 'lightning/navigation';
 import resolveContext from '@salesforce/apex/BG_PartnerMerchantDashboardController.resolveContext';
 
 export default class BgPartnerMerchantDashboard extends LightningElement {
-    @api recordId;
+    _recordId;
     @track dashboardMode = 'Search';
-    @track isLoading = true;
+    @track isLoading = false;
     @track isNotesSidebarOpen = false;
     @track currentRecordId;
     @track recordName = '';
@@ -13,19 +13,36 @@ export default class BgPartnerMerchantDashboard extends LightningElement {
     @wire(CurrentPageReference)
     pageRef;
 
-    connectedCallback() {
+    @api
+    get recordId() {
+        return this._recordId;
+    }
+    set recordId(value) {
+        this._recordId = value;
+        // Initialize when recordId is set
         this.initializeDashboard();
+    }
+
+    connectedCallback() {
+        // Initialize for app/home pages (no recordId)
+        if (!this._recordId) {
+            this.initializeDashboard();
+        }
     }
 
     async initializeDashboard() {
         this.isLoading = true;
+
         try {
-            if (this.recordId) {
-                const ctx = await resolveContext({ recordId: this.recordId });
+            if (this._recordId) {
+                // Hide search and show record-specific dashboard
+                const ctx = await resolveContext({ recordId: this._recordId });
                 this.dashboardMode = ctx.dashboardMode;
-                this.currentRecordId = this.recordId;
+                this.currentRecordId = this._recordId;
             } else {
+                // Show search when no recordId (home/app page)
                 this.dashboardMode = 'Search';
+                this.currentRecordId = null;
             }
         } catch (error) {
             console.error('Error initializing dashboard:', error);
@@ -54,8 +71,14 @@ export default class BgPartnerMerchantDashboard extends LightningElement {
         this.isNotesSidebarOpen = false;
     }
 
-    get showSearch() {
+    // NEW: Show search header only on search mode
+    get showSearchHeader() {
         return this.dashboardMode === 'Search' && !this.isLoading;
+    }
+
+    // NEW: Show dashboard header (without search) when viewing a record
+    get showDashboardHeader() {
+        return this.dashboardMode !== 'Search' && !this.isLoading;
     }
 
     get showDashboard() {
