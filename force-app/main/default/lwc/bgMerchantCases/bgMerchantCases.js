@@ -57,25 +57,28 @@ export default class BgMerchantCases extends LightningElement {
         }
     }
 
-    handleFilterOpen() {
-        this.filterStatus = 'Open';
-        this.resetAndLoad();
-    }
+handleFilterOpen() {
+    console.log('Filter changed to: Open');
+    this.filterStatus = 'Open';
+    this.resetAndLoad();
+}
 
-    handleFilterClosed() {
-        this.filterStatus = 'Closed';
-        this.resetAndLoad();
-    }
+handleFilterClosed() {
+    console.log('Filter changed to: Closed');
+    this.filterStatus = 'Closed';
+    this.resetAndLoad();
+}
 
-    handleFilterAll() {
-        this.filterStatus = 'All';
-        this.resetAndLoad();
-    }
+handleFilterAll() {
+    console.log('Filter changed to: All');
+    this.filterStatus = 'All';
+    this.resetAndLoad();
+}
 
-    resetAndLoad() {
-        this.currentPage = 1;
-        this.loadCases();
-    }
+resetAndLoad() {
+    this.currentPage = 1;
+    this.loadCases();
+}
 
     handlePreviousPage() {
         if (this.currentPage > 1) {
@@ -102,6 +105,11 @@ export default class BgMerchantCases extends LightningElement {
     get allVariant() {
         return this.filterStatus === 'All' ? 'brand' : 'neutral';
     }
+
+
+get filterStatusLabel() {
+    return this.filterStatus.toLowerCase();
+}
 
     get hasCases() {
         return !this.isLoading && this.cases.length > 0;

@@ -93,6 +93,10 @@ export default class BgMerchantOpportunities extends LightningElement {
         return this.filterStatus === 'All' ? 'brand' : 'neutral';
     }
 
+    get filterStatusLabel() {
+        return this.filterStatus.toLowerCase();
+    }
+
     get hasOpportunities() {
         return !this.isLoading && this.opportunities.length > 0;
     }
