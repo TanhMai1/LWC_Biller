@@ -213,7 +213,6 @@ public with sharing class BG_PartnerMerchantDashboardController {
         dto.lastRapidDate = acc.Date_of_Last_Rapid__c;
         dto.activeAccounts = acc.Current_Number_of_Active_Accounts__c;
         
-        // Calculate Premium Percentage
         if (acc.Current_Number_of_Active_Accounts__c != null && acc.Current_Number_of_Active_Accounts__c > 0) {
             Decimal premium = acc.Current_Number_of_Premium_Accounts__c != null ? acc.Current_Number_of_Premium_Accounts__c : 0;
             dto.premiumAccountsPercent = (premium / acc.Current_Number_of_Active_Accounts__c) * 100;
