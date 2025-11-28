@@ -5,6 +5,8 @@ import { createFilterHandler, resetAndLoad, handlePreviousPage as utilHandlePrev
 
 export default class BgPartnerAccountPage extends LightningElement {
     @api accountId;
+    @api partnerAccountName = ''; // NEW: Receive partner name from parent dashboard
+    
     @track partnerData;
     @track resellerContacts = [];
     @track isLoading = true;
@@ -14,8 +16,8 @@ export default class BgPartnerAccountPage extends LightningElement {
     @track pageSize = 10;
     @track sortField = 'Name';
     @track sortDir = 'ASC';
-    @track searchTerm = '';
-    @track openSections = []; // Track which accordion sections are open
+    @track searchFilter = '';
+    @track openSections = [];
 
     sortOptions = [
         { label: 'Name', value: 'Name' },
@@ -33,6 +35,15 @@ export default class BgPartnerAccountPage extends LightningElement {
         this.isLoading = true;
         try {
             this.partnerData = await getPartnerSummary({ accountId: this.accountId });
+            
+            // Dispatch record name to parent (for dashboard title)
+            if (this.partnerData && this.partnerData.accountName) {
+                this.dispatchEvent(new CustomEvent('recordloaded', {
+                    detail: { recordName: this.partnerData.accountName },
+                    bubbles: true,
+                    composed: true
+                }));
+            }
         } catch (error) {
             console.error('Error loading partner data:', error);
         } finally {
@@ -49,7 +60,7 @@ export default class BgPartnerAccountPage extends LightningElement {
                 pageSize: this.pageSize,
                 sortField: this.sortField,
                 sortDir: this.sortDir,
-                searchTerm: this.searchTerm
+                searchTerm: this.searchFilter
             });
             this.resellerContacts = result.records;
             this.totalCount = result.totalCount;
@@ -61,7 +72,7 @@ export default class BgPartnerAccountPage extends LightningElement {
     }
 
     handleContactSearch(event) {
-        this.searchTerm = event.target.value;
+        this.searchFilter = event.target.value;
         resetAndLoad(this, this.loadContacts);
     }
 
@@ -78,7 +89,6 @@ export default class BgPartnerAccountPage extends LightningElement {
         utilHandleNextPage(this, this.loadContacts);
     }
 
-    // NEW: Handle accordion section toggle
     handleAccordionToggle(event) {
         this.openSections = event.detail.openSections;
     }
@@ -90,6 +100,25 @@ export default class BgPartnerAccountPage extends LightningElement {
     get formattedLastRapidDate() {
         if (!this.partnerData?.lastRapidDate) return 'N/A';
         return new Date(this.partnerData.lastRapidDate).toLocaleDateString();
+    }
+
+    get formattedPluginFee() {
+        if (!this.partnerData?.pluginMonthlyFee) return 'N/A';
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' })
+            .format(this.partnerData.pluginMonthlyFee);
+    }
+
+    get formattedPremiumPercent() {
+        if (!this.partnerData?.premiumAccountsPercent) return '0%';
+        return `${this.partnerData.premiumAccountsPercent.toFixed(1)}%`;
+    }
+
+    // NEW: Use shared state pattern - same as merchant component
+    get displayPartnerAccountName() {
+        // Priority: props (shared state from dashboard) > Apex data > fallback
+        return this.partnerAccountName || 
+               this.partnerData?.accountName || 
+               'PNC';
     }
 
     get hasContacts() {

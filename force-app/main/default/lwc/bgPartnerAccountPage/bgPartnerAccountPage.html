@@ -2,7 +2,12 @@
     <!-- Partner Summary Cards -->
     <div class="slds-grid slds-gutters slds-wrap slds-m-bottom_small">
         <div class="slds-col slds-size_1-of-2">
-            <lightning-card title="Partner Summary - PNC" icon-name="standard:account">
+            <lightning-card icon-name="standard:account">
+                <div slot="title">
+                    <span class="slds-text-heading_small">
+                        Partner Summary - {partnerAccountName}
+                    </span>
+                </div>
                 <div class="slds-p-around_medium">
                     <template lwc:if={isLoading}>
                         <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
@@ -10,7 +15,7 @@
                     <template lwc:if={partnerData}>
                         <div class="summary-item">
                             <span class="summary-label">Plugin Monthly Fee:</span>
-                            <span class="summary-value">{partnerData.pluginMonthlyFee}</span>
+                            <span class="summary-value">{formattedPluginFee}</span>
                         </div>
                         <div class="summary-item">
                             <span class="summary-label">Plugin Bill To:</span>
@@ -47,7 +52,7 @@
                         </div>
                         <div class="summary-item">
                             <span class="summary-label">% of Premium Accounts:</span>
-                            <span class="summary-value">{partnerData.premiumAccountsPercent}%</span>
+                            <span class="summary-value">{formattedPremiumPercent}</span>
                         </div>
                     </template>
                 </div>

@@ -8,7 +8,8 @@ export default class BgPartnerMerchantDashboard extends LightningElement {
     @track isLoading = false;
     @track isNotesSidebarOpen = false;
     @track currentRecordId;
-    @track currentRecordName = ''; // NEW: Store the record name
+    @track currentRecordName = '';
+    @track parentAccountName = ''; // NEW: Store parent account name
 
     @wire(CurrentPageReference)
     pageRef;
@@ -19,12 +20,10 @@ export default class BgPartnerMerchantDashboard extends LightningElement {
     }
     set recordId(value) {
         this._recordId = value;
-        // Initialize when recordId is set
         this.initializeDashboard();
     }
 
     connectedCallback() {
-        // Initialize for app/home pages (no recordId)
         if (!this._recordId) {
             this.initializeDashboard();
         }
@@ -35,15 +34,14 @@ export default class BgPartnerMerchantDashboard extends LightningElement {
 
         try {
             if (this._recordId) {
-                // Hide search and show record-specific dashboard
                 const ctx = await resolveContext({ recordId: this._recordId });
                 this.dashboardMode = ctx.dashboardMode;
                 this.currentRecordId = this._recordId;
             } else {
-                // Show search when no recordId (home/app page)
                 this.dashboardMode = 'Search';
                 this.currentRecordId = null;
                 this.currentRecordName = '';
+                this.parentAccountName = '';
             }
         } catch (error) {
             console.error('Error initializing dashboard:', error);
@@ -56,7 +54,8 @@ export default class BgPartnerMerchantDashboard extends LightningElement {
     handleRecordSelect(event) {
         const { recordId, objectType, recordType, name } = event.detail;
         this.currentRecordId = recordId;
-        this.currentRecordName = name || ''; // Store the selected record name
+        this.currentRecordName = name || '';
+        this.parentAccountName = ''; // Reset parent name
         
         if (objectType === 'Account') {
             this.dashboardMode = recordType === 'Reseller' ? 'Partner' : 'Merchant';
@@ -65,10 +64,17 @@ export default class BgPartnerMerchantDashboard extends LightningElement {
         }
     }
 
-    // NEW: Handle when child components load and provide their names
+    // NEW: Handle when child components load and provide names
     handleRecordLoaded(event) {
-        if (event.detail && event.detail.recordName) {
-            this.currentRecordName = event.detail.recordName;
+        if (event.detail) {
+            // Main record name (merchant/partner/contact)
+            if (event.detail.recordName) {
+                this.currentRecordName = event.detail.recordName;
+            }
+            // Parent account name (for merchants with parents)
+            if (event.detail.parentAccountName) {
+                this.parentAccountName = event.detail.parentAccountName;
+            }
         }
     }
 
@@ -80,12 +86,10 @@ export default class BgPartnerMerchantDashboard extends LightningElement {
         this.isNotesSidebarOpen = false;
     }
 
-    // Show search header only on search mode
     get showSearchHeader() {
         return this.dashboardMode === 'Search' && !this.isLoading;
     }
 
-    // Show dashboard header (without search) when viewing a record
     get showDashboardHeader() {
         return this.dashboardMode !== 'Search' && !this.isLoading;
     }

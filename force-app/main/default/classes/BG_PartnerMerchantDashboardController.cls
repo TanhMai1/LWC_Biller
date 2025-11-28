@@ -55,6 +55,7 @@ public with sharing class BG_PartnerMerchantDashboardController {
         @AuraEnabled public String pluginBillTo;
         @AuraEnabled public String techFeeMinimumPlan;
         @AuraEnabled public String achSoldBy;
+        @AuraEnabled public String parentAccountName;
     }
     
     public class ResellerContactDTO {
@@ -307,7 +308,7 @@ public static PaginatedResultDTO getResellerContacts(String accountId, Integer p
                    Adoption_Status__c, Connected_Accounting_Software__c,
                    Connected_CC_Gateway__c, Connected_ACH_Gateway__c, Connected_Check_Gateway__c,
                    BDR__r.Name, SDR__r.Name, Account_Executive__r.Name, Subscriber_Success__r.Name,
-                   ParentId, Parent.Plugin_Monthly_Fee__c, Parent.Plugin_Bill_To__c, Parent.ACH_Sold_By__c
+                   ParentId, Parent.Name, Parent.Plugin_Monthly_Fee__c, Parent.Plugin_Bill_To__c, Parent.ACH_Sold_By__c
             FROM Account 
             WHERE Id = :accountId AND Type = 'Merchant'
             LIMIT 1
@@ -334,6 +335,7 @@ public static PaginatedResultDTO getResellerContacts(String accountId, Integer p
             dto.pluginMonthlyFee = acc.Parent.Plugin_Monthly_Fee__c;
             dto.pluginBillTo = acc.Parent.Plugin_Bill_To__c;
             dto.achSoldBy = acc.Parent.ACH_Sold_By__c;
+            dto.parentAccountName = acc.Parent.Name;
             dto.techFeeMinimumPlan = getTechFeeMinimumPlan(acc.ParentId);
         }
         

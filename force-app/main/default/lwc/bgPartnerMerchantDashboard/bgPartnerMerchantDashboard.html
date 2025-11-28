@@ -63,6 +63,7 @@
                     <template lwc:if={isPartnerMode}>
                         <c-bg-partner-account-page 
                             account-id={currentRecordId}
+                            partner-account-name={currentRecordName}
                             onopennotes={handleOpenNotes}
                             onrecordloaded={handleRecordLoaded}>
                         </c-bg-partner-account-page>
@@ -72,6 +73,7 @@
                     <template lwc:if={isMerchantMode}>
                         <c-bg-merchant-account-page 
                             account-id={currentRecordId}
+                            parent-account-name={parentAccountName}
                             onopennotes={handleOpenNotes}
                             onrecordloaded={handleRecordLoaded}>
                         </c-bg-merchant-account-page>

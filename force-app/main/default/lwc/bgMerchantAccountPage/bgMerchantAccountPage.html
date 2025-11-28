@@ -5,11 +5,13 @@
 
     <template lwc:if={merchantData}>
         <div class="merchant-container">
+            <!-- Summary Grid -->
             <div class="slds-grid slds-gutters slds-wrap">
+                <!-- Partner Summary (if shown) -->
                 <template lwc:if={showPartnerSummary}>
                     <div class="slds-col slds-size_1-of-2">
                         <div class="summary-card">
-                            <div class="card-header">PARTNER SUMMARY - PNC</div>
+                            <div class="card-header">PARTNER SUMMARY - {displayParentAccountName}</div>
                             <div class="summary-item">
                                 <span class="summary-label">Plugin Monthly Fee:</span>
                                 <span class="summary-value">{formattedPluginFee}</span>

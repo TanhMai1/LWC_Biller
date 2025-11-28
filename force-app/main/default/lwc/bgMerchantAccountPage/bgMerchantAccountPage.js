@@ -3,7 +3,9 @@ import getMerchantSummary from '@salesforce/apex/BG_PartnerMerchantDashboardCont
 
 export default class BgMerchantAccountPage extends LightningElement {
     @api accountId;
-    @api isNested = false;    
+    @api isNested = false;
+    @api parentAccountName = ''; // NEW: Receive parent name from parent component
+    
     @track merchantData;
     @track isLoading = true;
 
@@ -15,6 +17,27 @@ export default class BgMerchantAccountPage extends LightningElement {
         this.isLoading = true;
         try {
             this.merchantData = await getMerchantSummary({ accountId: this.accountId });
+            
+            // Dispatch record names to parent (only if not nested)
+            if (!this.isNested && this.merchantData) {
+                const eventDetail = {};
+                
+                // Always dispatch merchant name
+                if (this.merchantData.accountName) {
+                    eventDetail.recordName = this.merchantData.accountName;
+                }
+                
+                // Dispatch parent account name if it exists
+                if (this.merchantData.parentAccountName) {
+                    eventDetail.parentAccountName = this.merchantData.parentAccountName;
+                }
+                
+                this.dispatchEvent(new CustomEvent('recordloaded', {
+                    detail: eventDetail,
+                    bubbles: true,
+                    composed: true
+                }));
+            }
         } catch (error) {
             console.error('Error loading merchant data:', error);
         } finally {
@@ -28,6 +51,7 @@ export default class BgMerchantAccountPage extends LightningElement {
         }));
     }
 
+    // Automatically detect if partner data exists
     get hasPartnerData() {
         return this.merchantData && (
             this.merchantData.pluginMonthlyFee || 
@@ -37,8 +61,24 @@ export default class BgMerchantAccountPage extends LightningElement {
         );
     }
 
+    // Automatically show partner summary if data exists
     get showPartnerSummary() {
         return this.hasPartnerData;
+    }
+
+    // NEW: Use parent name from either props (passed down) or data (from Apex)
+    // Priority: props > Apex data > fallback
+    get displayParentAccountName() {
+        // If parent passed it down as prop, use that (for shared state)
+        if (this.parentAccountName) {
+            return this.parentAccountName;
+        }
+        // Otherwise use from Apex data
+        if (this.merchantData?.parentAccountName) {
+            return this.merchantData.parentAccountName;
+        }
+        // Fallback
+        return 'PNC';
     }
 
     get formattedLastTransaction() {
