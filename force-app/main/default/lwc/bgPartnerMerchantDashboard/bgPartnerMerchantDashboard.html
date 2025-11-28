@@ -1,7 +1,33 @@
 <template>
     <div class="dashboard-container">
-        <!-- Header with Search -->
-        <template lwc:if={showDashboard}>
+        <!-- Header with Search - Only show on Search mode -->
+        <template lwc:if={showSearchHeader}>
+            <div class="slds-page-header">
+                <div class="slds-page-header__row">
+                    <div class="slds-page-header__col-title">
+                        <div class="slds-media">
+                            <div class="slds-media__figure">
+                                <lightning-icon icon-name="custom:custom85" size="medium"></lightning-icon>
+                            </div>
+                            <div class="slds-media__body">
+                                <h1 class="slds-page-header__title slds-truncate" title="Merchant Overview Dashboard">
+                                    Merchant Overview Dashboard
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Search Bar -->
+                <div class="slds-page-header__row slds-m-top_small">
+                    <div class="slds-col slds-size_1-of-1">
+                        <c-bg-search onrecordselect={handleRecordSelect}></c-bg-search>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Header without Search - Show on dashboard pages -->
+        <template lwc:if={showDashboardHeader}>
             <div class="slds-page-header">
                 <div class="slds-page-header__row">
                     <div class="slds-page-header__col-title">
@@ -17,17 +43,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Search Bar -->
-                <div class="slds-page-header__row slds-m-top_small">
-                    <div class="slds-col slds-size_1-of-1">
-                        <lightning-input
-                            type="search"
-                            placeholder="Search..."
-                            class="search-input"
-                            variant="label-hidden">
-                        </lightning-input>
-                    </div>
-                </div>
             </div>
         </template>
 
@@ -35,11 +50,6 @@
         <div class="slds-grid slds-gutters">
             <!-- Left Content Area -->
             <div class={mainContentClass}>
-                <!-- Search Component (Home Page Only) -->
-                <template lwc:if={showSearch}>
-                    <c-bg-search onrecordselect={handleRecordSelect}></c-bg-search>
-                </template>
-
                 <!-- Loading State -->
                 <template lwc:if={isLoading}>
                     <div class="slds-align_absolute-center slds-m-top_large">
@@ -53,7 +63,8 @@
                     <template lwc:if={isPartnerMode}>
                         <c-bg-partner-account-page 
                             account-id={currentRecordId}
-                            onopennotes={handleOpenNotes}>
+                            onopennotes={handleOpenNotes}
+                            onrecordloaded={handleRecordLoaded}>
                         </c-bg-partner-account-page>
                     </template>
 
@@ -61,7 +72,8 @@
                     <template lwc:if={isMerchantMode}>
                         <c-bg-merchant-account-page 
                             account-id={currentRecordId}
-                            onopennotes={handleOpenNotes}>
+                            onopennotes={handleOpenNotes}
+                            onrecordloaded={handleRecordLoaded}>
                         </c-bg-merchant-account-page>
                     </template>
 
@@ -69,7 +81,8 @@
                     <template lwc:if={isResellerContactMode}>
                         <c-bg-reseller-contact-page 
                             contact-id={currentRecordId}
-                            onopennotes={handleOpenNotes}>
+                            onopennotes={handleOpenNotes}
+                            onrecordloaded={handleRecordLoaded}>
                         </c-bg-reseller-contact-page>
                     </template>
                 </template>

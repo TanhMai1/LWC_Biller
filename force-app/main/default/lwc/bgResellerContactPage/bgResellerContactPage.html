@@ -23,15 +23,73 @@
             </template>
         </div>
 
-        <!-- Filter Account Section -->
+        <!-- PARTNER SUMMARY SECTION - ADDED -->
+        <template lwc:if={hasPartnerData}>
+            <div class="summary-section slds-m-top_medium">
+                <div class="section-header">PARTNER SUMMARY - PNC</div>
+                <div class="summary-item">
+                    <span class="summary-label">Plugin Monthly Fee:</span>
+                    <span class="summary-value">{formattedPluginFee}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Plugin Bill To:</span>
+                    <span class="summary-value">{contactData.pluginBillTo}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Tech Fee Min Plan:</span>
+                    <span class="summary-value">{contactData.techFeeMinimumPlan}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">ACH Sold By:</span>
+                    <span class="summary-value">{contactData.achSoldBy}</span>
+                </div>
+            </div>
+        </template>
+
+        <!-- Filter Section -->
         <div class="filter-section slds-m-top_medium">
-            <lightning-input
-                type="text"
-                label="Filter Account"
-                placeholder="Search merchants..."
-                value={filterName}
-                onchange={handleNameFilter}>
-            </lightning-input>
+            <div class="slds-grid slds-gutters slds-wrap">
+                <!-- Account Name Filter -->
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                    <lightning-input
+                        type="text"
+                        label="Filter Account"
+                        placeholder="Search merchants..."
+                        value={filterName}
+                        onchange={handleNameFilter}>
+                    </lightning-input>
+                </div>
+
+                <!-- Plan Filter -->
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                    <lightning-combobox
+                        label="Plan Type"
+                        value={filterPlan}
+                        options={planOptions}
+                        onchange={handlePlanFilter}>
+                    </lightning-combobox>
+                </div>
+
+                <!-- Level Filter -->
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                    <lightning-combobox
+                        label="Level"
+                        value={filterLevel}
+                        options={levelOptions}
+                        onchange={handleLevelFilter}>
+                    </lightning-combobox>
+                </div>
+
+                <!-- Status Filter -->
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                    <lightning-combobox
+                        label="Adoption Status"
+                        value={filterStatus}
+                        options={statusOptions}
+                        onchange={handleStatusFilter}>
+                    </lightning-combobox>
+                </div>
+            </div>
         </div>
 
         <!-- Merchant Accounts Accordion -->
@@ -50,15 +108,40 @@
                             key={merchant.accountId} 
                             name={merchant.accountId} 
                             label={merchant.accountName}>
+                            <!-- REMOVED show-partner-summary prop - now automatic -->
                             <c-bg-merchant-account-page
                                 account-id={merchant.accountId}
                                 is-nested="true"
-                                show-partner-summary="true"
                                 onopennotes={handleOpenNotes}>
                             </c-bg-merchant-account-page>
                         </lightning-accordion-section>
                     </template>
                 </lightning-accordion>
+
+                <!-- Pagination -->
+                <template lwc:if={showPagination}>
+                    <div class="slds-m-top_medium slds-align_absolute-center">
+                        <lightning-button 
+                            label="Previous" 
+                            onclick={handlePreviousPage}
+                            disabled={isFirstPage}>
+                        </lightning-button>
+                        <span class="slds-m-horizontal_small">
+                            Page {currentPage} of {totalPages} ({totalCount} total merchants)
+                        </span>
+                        <lightning-button 
+                            label="Next" 
+                            onclick={handleNextPage}
+                            disabled={isLastPage}>
+                        </lightning-button>
+                    </div>
+                </template>
+            </template>
+
+            <template lwc:if={noMerchants}>
+                <div class="slds-align_absolute-center slds-text-color_weak slds-m-top_medium">
+                    No merchants found matching the current filters.
+                </div>
             </template>
         </div>
     </div>

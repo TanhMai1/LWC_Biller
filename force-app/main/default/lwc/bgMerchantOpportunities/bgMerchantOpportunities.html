@@ -1,24 +1,22 @@
 <template>
     <lightning-card title="Opportunities" icon-name="standard:opportunity">
-        <div slot="actions">
-            <lightning-button-group>
-                <lightning-button 
-                    label="Open" 
-                    variant={openVariant}
-                    onclick={handleFilterOpen}>
-                </lightning-button>
-                <lightning-button 
-                    label="Closed" 
-                    variant={closedVariant}
-                    onclick={handleFilterClosed}>
-                </lightning-button>
-                <lightning-button 
-                    label="All" 
-                    variant={allVariant}
-                    onclick={handleFilterAll}>
-                </lightning-button>
-            </lightning-button-group>
-        </div>
+        <div slot="actions" class="slds-button-group" role="group">
+        <lightning-button
+            label="Open"
+            variant={openVariant}
+            onclick={handleFilterOpen}>
+        </lightning-button>
+        <lightning-button
+            label="Closed"
+            variant={closedVariant}
+            onclick={handleFilterClosed}>
+        </lightning-button>
+        <lightning-button
+            label="All"
+            variant={allVariant}
+            onclick={handleFilterAll}>
+        </lightning-button>
+    </div>
 
         <div class="slds-p-around_medium">
             <template lwc:if={isLoading}>
@@ -55,8 +53,8 @@
             </template>
 
             <template lwc:if={noOpportunities}>
-                <div class="slds-text-body_regular slds-text-color_weak slds-align_absolute-center slds-p-around_medium">
-                    No opportunities found.
+                <div class="slds-align_absolute-center slds-text-color_weak slds-m-vertical_medium">
+                    No {filterStatusLabel} opportunities found.  
                 </div>
             </template>
         </div>

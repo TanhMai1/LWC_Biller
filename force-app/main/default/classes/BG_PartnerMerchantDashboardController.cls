@@ -78,6 +78,7 @@ public with sharing class BG_PartnerMerchantDashboardController {
     public class CaseDTO {
         @AuraEnabled public String caseId;
         @AuraEnabled public String caseNumber;
+        @AuraEnabled public String caseUrl;
         @AuraEnabled public String caseType;
         @AuraEnabled public String ownerName;
         @AuraEnabled public String status;
@@ -89,6 +90,7 @@ public with sharing class BG_PartnerMerchantDashboardController {
     public class OpportunityDTO {
         @AuraEnabled public String opportunityId;
         @AuraEnabled public String name;
+        @AuraEnabled public String opportunityUrl;
         @AuraEnabled public String oppType;
         @AuraEnabled public String stage;
     }
@@ -185,7 +187,7 @@ public with sharing class BG_PartnerMerchantDashboardController {
     
     // ==================== Partner Methods ====================
     
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled(cacheable=false)
     public static PartnerSummaryDTO getPartnerSummary(String accountId) {
         Account acc = [
             SELECT Id, Name, Plugin_Monthly_Fee__c, Plugin_Bill_To__c, ACH_Sold_By__c,
@@ -211,7 +213,6 @@ public with sharing class BG_PartnerMerchantDashboardController {
         dto.lastRapidDate = acc.Date_of_Last_Rapid__c;
         dto.activeAccounts = acc.Current_Number_of_Active_Accounts__c;
         
-        // Calculate Premium Percentage
         if (acc.Current_Number_of_Active_Accounts__c != null && acc.Current_Number_of_Active_Accounts__c > 0) {
             Decimal premium = acc.Current_Number_of_Premium_Accounts__c != null ? acc.Current_Number_of_Premium_Accounts__c : 0;
             dto.premiumAccountsPercent = (premium / acc.Current_Number_of_Active_Accounts__c) * 100;
@@ -422,6 +423,7 @@ public static PaginatedResultDTO getResellerContacts(String accountId, Integer p
             dto.caseId = c.Id;
             dto.caseNumber = c.CaseNumber;
             dto.caseType = c.Type;
+            dto.caseUrl = '/' + c.Id;
             dto.ownerName = c.Owner.Name;
             dto.status = c.Status;
             dto.category = c.Category__c;
@@ -468,6 +470,7 @@ public static PaginatedResultDTO getResellerContacts(String accountId, Integer p
             dto.opportunityId = o.Id;
             dto.name = o.Name;
             dto.oppType = o.Type;
+            dto.opportunityUrl = '/' + o.Id;
             dto.stage = o.StageName;
             dtos.add(dto);
         }
@@ -746,7 +749,7 @@ public static PaginatedResultDTO getResellerContacts(String accountId, Integer p
                 SELECT Minimum_Plan_Required__c
                 FROM Addon_Marketplace__c
                 WHERE Reseller_Account__c = :resellerAccountId
-                AND Type = 'Technology Fees'
+                AND Type__c = 'Technology Fees'
                 ORDER BY CreatedDate DESC
                 LIMIT 1
             ];

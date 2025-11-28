@@ -14,7 +14,7 @@ export default class BgPartnerAccountPage extends LightningElement {
     @track pageSize = 10;
     @track sortField = 'Name';
     @track sortDir = 'ASC';
-    @track searchFilter = '';
+    @track searchTerm = '';
     @track openSections = []; // Track which accordion sections are open
 
     sortOptions = [
@@ -49,7 +49,7 @@ export default class BgPartnerAccountPage extends LightningElement {
                 pageSize: this.pageSize,
                 sortField: this.sortField,
                 sortDir: this.sortDir,
-                searchFilter: this.searchFilter
+                searchTerm: this.searchTerm
             });
             this.resellerContacts = result.records;
             this.totalCount = result.totalCount;
@@ -61,7 +61,7 @@ export default class BgPartnerAccountPage extends LightningElement {
     }
 
     handleContactSearch(event) {
-        this.searchFilter = event.target.value;
+        this.searchTerm = event.target.value;
         resetAndLoad(this, this.loadContacts);
     }
 

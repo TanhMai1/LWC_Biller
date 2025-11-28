@@ -8,7 +8,7 @@ export default class BgPartnerMerchantDashboard extends LightningElement {
     @track isLoading = false;
     @track isNotesSidebarOpen = false;
     @track currentRecordId;
-    @track recordName = '';
+    @track currentRecordName = ''; // NEW: Store the record name
 
     @wire(CurrentPageReference)
     pageRef;
@@ -43,6 +43,7 @@ export default class BgPartnerMerchantDashboard extends LightningElement {
                 // Show search when no recordId (home/app page)
                 this.dashboardMode = 'Search';
                 this.currentRecordId = null;
+                this.currentRecordName = '';
             }
         } catch (error) {
             console.error('Error initializing dashboard:', error);
@@ -53,13 +54,21 @@ export default class BgPartnerMerchantDashboard extends LightningElement {
     }
 
     handleRecordSelect(event) {
-        const { recordId, objectType, recordType } = event.detail;
+        const { recordId, objectType, recordType, name } = event.detail;
         this.currentRecordId = recordId;
+        this.currentRecordName = name || ''; // Store the selected record name
         
         if (objectType === 'Account') {
             this.dashboardMode = recordType === 'Reseller' ? 'Partner' : 'Merchant';
         } else if (objectType === 'Contact') {
             this.dashboardMode = 'ResellerContact';
+        }
+    }
+
+    // NEW: Handle when child components load and provide their names
+    handleRecordLoaded(event) {
+        if (event.detail && event.detail.recordName) {
+            this.currentRecordName = event.detail.recordName;
         }
     }
 
@@ -71,8 +80,14 @@ export default class BgPartnerMerchantDashboard extends LightningElement {
         this.isNotesSidebarOpen = false;
     }
 
-    get showSearch() {
+    // Show search header only on search mode
+    get showSearchHeader() {
         return this.dashboardMode === 'Search' && !this.isLoading;
+    }
+
+    // Show dashboard header (without search) when viewing a record
+    get showDashboardHeader() {
+        return this.dashboardMode !== 'Search' && !this.isLoading;
     }
 
     get showDashboard() {
@@ -98,9 +113,21 @@ export default class BgPartnerMerchantDashboard extends LightningElement {
     }
 
     get dashboardTitle() {
-        if (this.isPartnerMode) return 'Partner Overview Dashboard - PNC';
-        if (this.isMerchantMode) return 'Merchant Overview Dashboard';
-        if (this.isResellerContactMode) return 'Reseller Contact';
+        if (this.isPartnerMode) {
+            return this.currentRecordName 
+                ? `Partner Overview Dashboard - ${this.currentRecordName}` 
+                : 'Partner Overview Dashboard - PNC';
+        }
+        if (this.isMerchantMode) {
+            return this.currentRecordName 
+                ? `Merchant Overview Dashboard - ${this.currentRecordName}` 
+                : 'Merchant Overview Dashboard';
+        }
+        if (this.isResellerContactMode) {
+            return this.currentRecordName 
+                ? `Reseller Contact - ${this.currentRecordName}` 
+                : 'Reseller Contact Dashboard';
+        }
         return 'Dashboard';
     }
 }

@@ -11,7 +11,7 @@ export default class BgResellerContactPage extends LightningElement {
     @track merchants = [];
     @track isLoading = true;
     @track isLoadingMerchants = true;
-    @track openMerchantSections = []; // Track open merchant sections
+    @track openMerchantSections = [];
     
     // Pagination
     @track currentPage = 1;
@@ -58,6 +58,15 @@ export default class BgResellerContactPage extends LightningElement {
         this.isLoading = true;
         try {
             this.contactData = await getResellerContactSummary({ contactId: this.contactId });
+            
+            // Dispatch record name to parent (only if not nested)
+            if (!this.isNested && this.contactData && this.contactData.contactName) {
+                this.dispatchEvent(new CustomEvent('recordloaded', {
+                    detail: { recordName: this.contactData.contactName },
+                    bubbles: true,
+                    composed: true
+                }));
+            }
         } catch (error) {
             console.error('Error loading contact data:', error);
         } finally {
@@ -109,7 +118,6 @@ export default class BgResellerContactPage extends LightningElement {
         resetAndLoad(this, this.loadMerchants);
     }
 
-    // NEW: Handle merchant accordion toggle
     handleAccordionToggle(event) {
         this.openMerchantSections = event.detail.openSections;
     }

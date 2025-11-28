@@ -3,9 +3,7 @@ import getMerchantSummary from '@salesforce/apex/BG_PartnerMerchantDashboardCont
 
 export default class BgMerchantAccountPage extends LightningElement {
     @api accountId;
-    @api isNested = false;
-    @api showPartnerSummary = false;  // NEW PROPERTY
-    
+    @api isNested = false;    
     @track merchantData;
     @track isLoading = true;
 
@@ -28,6 +26,19 @@ export default class BgMerchantAccountPage extends LightningElement {
         this.dispatchEvent(new CustomEvent('opennotes', {
             detail: { parentId: this.accountId }
         }));
+    }
+
+    get hasPartnerData() {
+        return this.merchantData && (
+            this.merchantData.pluginMonthlyFee || 
+            this.merchantData.pluginBillTo || 
+            this.merchantData.techFeeMinimumPlan || 
+            this.merchantData.achSoldBy
+        );
+    }
+
+    get showPartnerSummary() {
+        return this.hasPartnerData;
     }
 
     get formattedLastTransaction() {

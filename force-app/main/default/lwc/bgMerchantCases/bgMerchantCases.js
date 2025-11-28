@@ -12,25 +12,28 @@ export default class BgMerchantCases extends LightningElement {
     @track pageSize = 5;
 
     columns = [
-        { 
-            label: 'Case Number', 
-            fieldName: 'caseNumber', 
-            type: 'text',
-            cellAttributes: { class: 'slds-text-link' }
-        },
-        { label: 'Type', fieldName: 'caseType', type: 'text' },
-        { label: 'Owner', fieldName: 'ownerName', type: 'text' },
-        { label: 'Status', fieldName: 'status', type: 'text' },
-        { label: 'Category', fieldName: 'category', type: 'text' },
-        { label: 'Sub-Category', fieldName: 'subCategory', type: 'text' },
-        { 
-            label: 'Summary', 
-            fieldName: 'summary', 
-            type: 'text',
-            wrapText: true,
-            initialWidth: 200
+    { 
+        label: 'Case Number', 
+        fieldName: 'caseUrl',  
+        type: 'url',           
+        typeAttributes: {
+            label: { fieldName: 'caseNumber' },
+            target: '_blank'  
         }
-    ];
+    },
+    { label: 'Type', fieldName: 'caseType', type: 'text' },
+    { label: 'Owner', fieldName: 'ownerName', type: 'text' },
+    { label: 'Status', fieldName: 'status', type: 'text' },
+    { label: 'Category', fieldName: 'category', type: 'text' },
+    { label: 'Sub-Category', fieldName: 'subCategory', type: 'text' },
+    { 
+        label: 'Summary', 
+        fieldName: 'summary', 
+        type: 'text',
+        wrapText: true,
+        initialWidth: 200
+    }
+];
 
     connectedCallback() {
         this.loadCases();
@@ -54,25 +57,28 @@ export default class BgMerchantCases extends LightningElement {
         }
     }
 
-    handleFilterOpen() {
-        this.filterStatus = 'Open';
-        this.resetAndLoad();
-    }
+handleFilterOpen() {
+    console.log('Filter changed to: Open');
+    this.filterStatus = 'Open';
+    this.resetAndLoad();
+}
 
-    handleFilterClosed() {
-        this.filterStatus = 'Closed';
-        this.resetAndLoad();
-    }
+handleFilterClosed() {
+    console.log('Filter changed to: Closed');
+    this.filterStatus = 'Closed';
+    this.resetAndLoad();
+}
 
-    handleFilterAll() {
-        this.filterStatus = 'All';
-        this.resetAndLoad();
-    }
+handleFilterAll() {
+    console.log('Filter changed to: All');
+    this.filterStatus = 'All';
+    this.resetAndLoad();
+}
 
-    resetAndLoad() {
-        this.currentPage = 1;
-        this.loadCases();
-    }
+resetAndLoad() {
+    this.currentPage = 1;
+    this.loadCases();
+}
 
     handlePreviousPage() {
         if (this.currentPage > 1) {
@@ -99,6 +105,11 @@ export default class BgMerchantCases extends LightningElement {
     get allVariant() {
         return this.filterStatus === 'All' ? 'brand' : 'neutral';
     }
+
+
+get filterStatusLabel() {
+    return this.filterStatus.toLowerCase();
+}
 
     get hasCases() {
         return !this.isLoading && this.cases.length > 0;

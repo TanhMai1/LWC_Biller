@@ -9,20 +9,24 @@
                         placeholder="Enter name to search..."
                         value={searchTerm}
                         onchange={handleSearchInput}
-                        variant="label-hidden">
+                        oninput={handleSearchInput}
+                        variant="label-hidden"
+                        class="search-input">
                     </lightning-input>
                 </div>
             </div>
 
             <!-- Search Results -->
             <template lwc:if={isSearching}>
-                <div class="slds-m-top_small">
+                <div class="slds-m-top_small slds-text-align_center">
                     <lightning-spinner alternative-text="Searching" size="small"></lightning-spinner>
                 </div>
             </template>
 
             <template lwc:if={showResults}>
-                <ul class="slds-listbox slds-listbox_vertical slds-dropdown slds-dropdown_fluid slds-m-top_x-small" role="listbox">
+                <ul class="slds-listbox slds-listbox_vertical slds-dropdown slds-dropdown_fluid slds-m-top_x-small" 
+                    role="listbox"
+                    style="max-height: 300px; overflow-y: auto;">
                     <template for:each={searchResults} for:item="result">
                         <li key={result.recordId} 
                             class="slds-listbox__item" 
@@ -30,8 +34,9 @@
                             onclick={handleResultSelect}
                             data-record-id={result.recordId}
                             data-object-type={result.objectType}
-                            data-record-type={result.recordType}>
-                            <div class="slds-listbox__option slds-listbox__option_plain slds-media slds-media_center">
+                            data-record-type={result.recordType}
+                            style="cursor: pointer;">
+                            <div class="slds-listbox__option slds-listbox__option_plain slds-media slds-media_center slds-p-around_x-small">
                                 <span class="slds-media__figure slds-listbox__option-icon">
                                     <lightning-icon 
                                         icon-name={result.iconName} 
@@ -54,7 +59,7 @@
             </template>
 
             <template lwc:if={noResults}>
-                <div class="slds-text-body_regular slds-text-color_weak slds-m-top_small">
+                <div class="slds-text-body_regular slds-text-color_weak slds-m-top_small slds-text-align_center">
                     No records found matching "{searchTerm}"
                 </div>
             </template>

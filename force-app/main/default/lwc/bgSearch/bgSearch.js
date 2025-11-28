@@ -50,10 +50,16 @@ export default class BgSearch extends LightningElement {
         const recordId = event.currentTarget.dataset.recordId;
         const objectType = event.currentTarget.dataset.objectType;
         const recordType = event.currentTarget.dataset.recordType;
+        
+        // Find the selected result to get the name
+        const selectedResult = this.searchResults.find(r => r.recordId === recordId);
+        const name = selectedResult ? selectedResult.name : '';
 
-        // Dispatch custom event to parent
+        // Dispatch custom event to parent with name included
         this.dispatchEvent(new CustomEvent('recordselect', {
-            detail: { recordId, objectType, recordType }
+            detail: { recordId, objectType, recordType, name },
+            bubbles: true,
+            composed: true
         }));
 
         // Clear search
